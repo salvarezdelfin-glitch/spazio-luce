@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://salvarezdelfin-glitch.github.io/spazio-luce-web/sitemap.xml
+Sitemap: https://salvarezdelfin-glitch.github.io/spazio-luce/sitemap.xml

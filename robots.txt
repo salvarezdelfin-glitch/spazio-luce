@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://spazioluce.netlify.app/sitemap.xml
+Sitemap: https://salvarezdelfin-glitch.github.io/spazio-luce-web/sitemap.xml

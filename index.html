@@ -63,7 +63,7 @@
     --line-strong:rgba(244,240,230,0.22);
     --container:1240px;
     --gutter:clamp(20px,5vw,64px);
-    --section-y:clamp(56px,9vw,110px);
+    --section-y:clamp(76px,11vw,150px);
 
     /* motion — strong custom curves, the built-in ones are too weak */
     --ease-out:cubic-bezier(0.23,1,0.32,1);
@@ -83,8 +83,8 @@
     background:var(--bg);
     color:var(--text);
     font-family:'Montserrat',system-ui,sans-serif;
-    font-size:15px;
-    line-height:1.7;
+    font-size:16px;
+    line-height:1.75;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
     text-rendering:optimizeLegibility;
@@ -203,35 +203,90 @@
     position:relative;min-height:100svh;display:flex;align-items:flex-end;
     padding-bottom:clamp(48px,8vw,88px);overflow:hidden;
   }
-  .hero-bg{position:absolute;inset:0;background:#000 center/cover no-repeat;background-image:url('img/proyecto-1.jpg');
+  @media (min-width:901px){.hero{padding-bottom:calc(clamp(48px,7vw,84px) + 78px)}}
+  /* taller than the hero (extra on top) so the slow scroll-parallax never exposes an edge */
+  .hero-bg{position:absolute;top:-16%;left:0;right:0;bottom:0;background:#000 center/cover no-repeat;background-image:url('img/proyecto-1.jpg');
     background-image:image-set(url('img/proyecto-1.webp') type('image/webp'),url('img/proyecto-1.jpg') type('image/jpeg'))}
   .hero-bg::after{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,.35) 40%,rgba(10,10,10,.92) 100%),
-      linear-gradient(90deg,rgba(10,10,10,.75) 0%,rgba(10,10,10,.15) 60%,transparent 100%);
+    background:linear-gradient(180deg,rgba(10,10,10,.5) 0%,rgba(10,10,10,.3) 38%,rgba(10,10,10,.94) 100%),
+      linear-gradient(90deg,rgba(10,10,10,.8) 0%,rgba(10,10,10,.18) 58%,transparent 100%);
   }
-  .hero-inner{position:relative;max-width:720px}
+  /* a pool of warm light that drifts toward the pointer — decorative, so it's allowed to be springy */
+  .hero-glow{
+    position:absolute;left:0;top:0;width:820px;height:820px;margin:-410px 0 0 -410px;border-radius:50%;
+    background:radial-gradient(circle,rgba(236,190,84,.26) 0%,rgba(228,184,74,.09) 38%,transparent 68%);
+    mix-blend-mode:screen;pointer-events:none;will-change:transform;
+    transform:translate3d(78vw,24vh,0);
+    animation:fade 1600ms ease-out 500ms both;
+  }
+  .hero-inner{position:relative;max-width:980px}
+  /* editorial headline: large, tight, with the gold italic carrying the emphasis */
   .hero h1{
-    font-size:clamp(38px,6.4vw,74px);font-weight:700;margin:22px 0 20px;letter-spacing:-.01em;
+    font-size:clamp(44px,7.1vw,96px);font-weight:700;margin:28px 0 28px;
+    letter-spacing:-.028em;line-height:.98;
   }
-  .hero h1 em{color:var(--gold);font-style:italic;font-weight:500}
-  .hero p{font-size:clamp(14px,1.4vw,16px);color:rgba(244,240,230,0.78);max-width:520px;margin-bottom:34px}
+  .hero h1 em{color:var(--gold);font-style:italic;font-weight:500;letter-spacing:-.022em}
+  /* each line sits in a mask and rises into place */
+  .hero h1 .ln{display:block;overflow:hidden;padding:.04em .08em .14em 0;margin-bottom:-.14em}
+  .hero h1 .ln > span{display:block;animation:lineUp 900ms var(--ease-out) both}
+  .hero h1 .ln:nth-child(1) > span{animation-delay:140ms}
+  .hero h1 .ln:nth-child(2) > span{animation-delay:250ms}
+  @keyframes lineUp{from{translate:0 108%}to{translate:0 0}}
+  .hero p:not(.eyebrow){
+    font-size:clamp(16px,1.55vw,19px);line-height:1.7;color:rgba(244,240,230,0.84);
+    max-width:34em;margin-bottom:40px;
+  }
+  .hero .eyebrow{font-size:11.5px;letter-spacing:.34em}
   .hero-actions{display:flex;flex-wrap:wrap;gap:14px}
+  .hero-actions .btn{padding:17px 34px}
 
   /* one orchestrated entrance, once per load — CSS keyframes run off the main thread */
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .hero-inner > *{animation:rise 640ms var(--ease-out) both}
+  .hero-inner > h1{animation:none}                      /* the headline animates line by line instead */
   .hero-inner > :nth-child(1){animation-delay:80ms}
-  .hero-inner > :nth-child(2){animation-delay:150ms}
-  .hero-inner > :nth-child(3){animation-delay:220ms}
-  .hero-inner > :nth-child(4){animation-delay:290ms}
+  .hero-inner > :nth-child(3){animation-delay:420ms}
+  .hero-inner > :nth-child(4){animation-delay:500ms}
   /* the photo fades up and settles from a slight zoom — depth without distraction (hero clips overflow) */
   @keyframes settle{from{scale:1.05}to{scale:1}}
   .hero-bg{animation:fade 900ms ease-out both,settle 1800ms var(--ease-out) both}
+
+  /* key facts, pinned to the foot of the hero (desktop; phones keep the scroll cue) */
+  .hero-bar{
+    position:absolute;left:0;right:0;bottom:0;z-index:2;
+    border-top:1px solid rgba(244,240,230,.16);
+    background:linear-gradient(0deg,rgba(10,10,10,.72),rgba(10,10,10,0));
+    animation:fade 900ms var(--ease-out) 760ms both;
+  }
+  .hero-bar .container{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:clamp(20px,3vw,56px);
+    align-items:center;padding-block:20px;
+    padding-right:calc(var(--gutter) + 64px);            /* leave room for the floating WhatsApp button */
+  }
+  .hb-item{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .hb-item small{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  .hb-item span,.hb-item a{font-size:14.5px;color:rgba(244,240,230,.92);transition:color 160ms ease}
+  .hb-more{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:rgba(244,240,230,.75);white-space:nowrap;transition:color 160ms ease}
+  .hb-more span{display:inline-block;transition:transform 220ms var(--ease-out)}
+  @media (hover:hover) and (pointer:fine){
+    .hb-item a:hover{color:var(--gold-bright)}
+    .hb-more:hover{color:var(--gold-bright)}
+    .hb-more:hover span{transform:translateY(3px)}
+  }
+  @media (max-width:900px){.hero-bar{display:none}}
+
+  /* primary CTA: the arrow leans forward on hover */
+  .btn-arrow .arr{display:inline-block;transition:transform 220ms var(--ease-out)}
+  @media (hover:hover) and (pointer:fine){.btn-arrow:hover .arr{transform:translateX(5px)}}
+
   @media (prefers-reduced-motion:reduce){
     .hero-inner > *{animation-name:fade}
+    .hero h1 .ln > span{animation-name:fade}
     .hero-bg{animation:fade 600ms ease-out both}
+    .hero-glow{animation:none;opacity:1}
+    .hero-bar{animation:none}
   }
 
   .quick-cats{background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line-soft)}
@@ -249,18 +304,32 @@
   .scroll-cue::before{content:"";width:3px;height:8px;background:var(--gold);border-radius:2px;animation:cue 1.7s ease infinite}
   @keyframes cue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(11px);opacity:0}100%{opacity:0}}
   @media (prefers-reduced-motion:reduce){.scroll-cue::before{animation:none}}
+  @media (min-width:901px){.scroll-cue{display:none}}   /* the hero bar's "Explorar" takes over on desktop */
 
   /* ---------- section shell ---------- */
   section{padding-block:var(--section-y)}
-  .sec-head{max-width:620px;margin-bottom:clamp(34px,5vw,56px)}
-  .sec-head h2{font-size:clamp(28px,3.6vw,42px);margin:16px 0 14px}
-  .sec-head p{color:var(--muted);font-size:15px}
+  /* two-column heading: title on the left, a short lede hanging off the baseline on the right */
+  .sec-head{
+    display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);
+    column-gap:clamp(32px,7vw,110px);align-items:end;
+    margin-bottom:clamp(44px,6.5vw,80px);padding-bottom:clamp(26px,3.5vw,40px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .sec-head .eyebrow{grid-column:1;grid-row:1}
+  .sec-head h2{
+    grid-column:1;grid-row:2;
+    font-size:clamp(32px,4.3vw,56px);line-height:1.06;letter-spacing:-.02em;margin:20px 0 0;
+  }
+  .sec-head p:not(.eyebrow){
+    grid-column:2;grid-row:1 / span 2;align-self:end;
+    color:var(--muted);font-size:16px;line-height:1.75;max-width:40ch;padding-bottom:6px;
+  }
 
   /* ---------- intro / approach ---------- */
   .approach{background:var(--bg-soft);border-block:1px solid var(--line-soft)}
   .approach-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(32px,6vw,80px);align-items:center}
-  .approach-grid h2{font-size:clamp(26px,3.4vw,38px);margin:16px 0 18px}
-  .approach-grid p{color:var(--muted);margin-bottom:16px}
+  .approach-grid h2{font-size:clamp(32px,4.4vw,56px);line-height:1.06;letter-spacing:-.02em;margin:20px 0 26px}
+  .approach-grid p{color:var(--muted);font-size:17px;line-height:1.8;margin-bottom:18px;max-width:34em}
   .pillars{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line-soft);border:1px solid var(--line-soft)}
   .pillar{background:var(--bg-soft);padding:26px 22px}
   .pillar b{font-family:'Playfair Display',serif;font-size:34px;color:var(--gold);font-weight:600;display:block;line-height:1}
@@ -270,11 +339,11 @@
   .services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
   .service{background:var(--surface);padding:clamp(30px,3.5vw,44px);transition:background-color 200ms ease}
   @media (hover:hover) and (pointer:fine){.service:hover{background:var(--surface-2)}}
-  .service .ico{width:40px;height:40px;color:var(--gold);margin-bottom:20px}
-  .service h3{font-size:21px;margin-bottom:16px;font-weight:600}
+  .service .ico{width:44px;height:44px;color:var(--gold);margin-bottom:28px}
+  .service h3{font-size:clamp(24px,2.4vw,30px);line-height:1.15;letter-spacing:-.01em;margin-bottom:20px;font-weight:600}
   .service ul{list-style:none}
-  .service li{font-size:13.5px;color:var(--muted);padding:5px 0 5px 20px;position:relative}
-  .service li::before{content:"";position:absolute;left:0;top:14px;width:9px;height:1px;background:var(--gold)}
+  .service li{font-size:15px;color:var(--muted);padding:7px 0 7px 22px;position:relative;line-height:1.5}
+  .service li::before{content:"";position:absolute;left:0;top:18px;width:10px;height:1px;background:var(--gold)}
 
   /* ---------- products ---------- */
   .products{background:var(--bg-soft);border-block:1px solid var(--line-soft)}
@@ -282,8 +351,8 @@
   .product{background:var(--bg-soft);padding:30px 26px;transition:background-color 200ms ease}
   @media (hover:hover) and (pointer:fine){.product:hover{background:var(--surface)}}
   .product .num{font-size:11px;color:var(--gold);letter-spacing:.1em}
-  .product h3{font-family:'Montserrat',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin:12px 0 10px}
-  .product p{font-size:13px;color:var(--muted)}
+  .product h3{font-family:'Montserrat',sans-serif;font-size:14px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin:18px 0 12px}
+  .product p{font-size:14.5px;line-height:1.7;color:var(--muted)}
 
   /* ---------- projects / gallery ---------- */
   .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -352,13 +421,13 @@
   /* ---------- quote band ---------- */
   .quote{position:relative;overflow:hidden;border-left:3px solid var(--gold);background:var(--surface)}
   .quote .container{padding-block:clamp(44px,6vw,72px)}
-  .quote blockquote{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3.2vw,34px);font-weight:500;line-height:1.4;max-width:780px}
+  .quote blockquote{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(28px,4.4vw,52px);font-weight:500;line-height:1.22;letter-spacing:-.015em;max-width:20em;text-wrap:balance}
   .quote cite{display:block;margin-top:20px;font-style:normal;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:600}
   .quote .mark{position:absolute;right:3vw;bottom:-40px;font-family:'Playfair Display',serif;font-size:220px;color:rgba(201,162,39,.06);line-height:1;pointer-events:none}
 
   /* ---------- CTA ---------- */
   .cta{background:var(--gold);color:#0A0A0A;text-align:center}
-  .cta h2{font-size:clamp(28px,4vw,44px);color:#0A0A0A;margin-bottom:10px}
+  .cta h2{font-size:clamp(36px,5.4vw,68px);line-height:1.04;letter-spacing:-.02em;color:#0A0A0A;margin-bottom:14px}
   .cta p{font-size:11px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:rgba(10,10,10,.6);margin-bottom:30px}
   .cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 
@@ -445,6 +514,9 @@
     transition:opacity 460ms var(--ease-out) calc(var(--i,0)*60ms),translate 460ms var(--ease-out) calc(var(--i,0)*60ms);
   }
   html.js .reveal-stagger.in .stag{opacity:1;translate:0 0}
+  /* the grids draw their hairlines with their own background — don't show an empty slab before the cards arrive */
+  .services-grid,.products-grid,.pillars{transition:background-color 520ms ease-out,border-color 520ms ease-out}
+  html.js .reveal-stagger:not(.in){background:transparent;border-color:transparent}
   /* keep the hover colour change on cards that also stagger */
   html.js .reveal-stagger .service.stag,html.js .reveal-stagger .product.stag{
     transition:opacity 460ms var(--ease-out) calc(var(--i,0)*60ms),translate 460ms var(--ease-out) calc(var(--i,0)*60ms),background-color 200ms ease;
@@ -472,6 +544,8 @@
     .footer-grid{grid-template-columns:1fr 1fr}
     .gallery{grid-template-columns:repeat(3,1fr)}
     .rev-list{grid-template-columns:1fr}
+    .sec-head{display:block;padding-bottom:28px}
+    .sec-head p:not(.eyebrow){margin-top:20px;padding-bottom:0}
   }
   @media (max-width:760px){
     /* open = user deciding (slower, staggered links); close = system responding (snappy) */
@@ -525,13 +599,22 @@
 
   <section class="hero" aria-label="Presentación">
     <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-glow" id="heroGlow" aria-hidden="true"></div>
     <div class="container hero-inner">
       <p class="eyebrow">Integración · Diseño · Productos y Servicio</p>
-      <h1>Tu espacio,<br><em>en las mejores manos</em></h1>
+      <h1><span class="ln"><span>Tu espacio,</span></span><em class="ln"><span>en las mejores manos</span></em></h1>
       <p>Diseño, ingeniería y materiales de alta calidad para crear ambientes funcionales, modernos y con valor. Un solo equipo del proyecto a la obra terminada.</p>
       <div class="hero-actions">
-        <a href="#cotiza" class="btn btn-primary">Cotiza sin compromiso</a>
+        <a href="#cotiza" class="btn btn-primary btn-arrow">Cotiza sin compromiso <span class="arr" aria-hidden="true">→</span></a>
         <a href="#servicios" class="btn btn-ghost">Ver servicios</a>
+      </div>
+    </div>
+    <div class="hero-bar">
+      <div class="container">
+        <div class="hb-item"><small>Cotización</small><span>Sin compromiso</span></div>
+        <div class="hb-item"><small>WhatsApp</small><a href="https://wa.me/525651634053" target="_blank" rel="noopener">5651 634 053</a></div>
+        <div class="hb-item"><small>Ubicación</small><span>Naucalpan, Edo. de México</span></div>
+        <a href="#enfoque" class="hb-more">Explorar <span aria-hidden="true">↓</span></a>
       </div>
     </div>
     <a href="#enfoque" class="scroll-cue" aria-label="Desplázate hacia abajo"></a>
@@ -978,6 +1061,49 @@
   } else {
     revealTargets.forEach(function(el){ el.classList.add('in'); });
   }
+
+  /* ---- hero: a pool of light follows the pointer; the photo drifts slower than the page ---- */
+  (function(){
+    var hero = document.querySelector('.hero');
+    var glow = document.getElementById('heroGlow');
+    var bg = document.querySelector('.hero-bg');
+    if(!hero || !glow) return;
+    var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var home = function(){ return {x: hero.clientWidth * .78, y: hero.clientHeight * .26}; };
+    var pos = home(), target = home(), running = false;
+    var draw = function(){ glow.style.transform = 'translate3d(' + pos.x.toFixed(1) + 'px,' + pos.y.toFixed(1) + 'px,0)'; };
+    draw();
+    /* ease toward the target each frame — it has momentum instead of snapping to the cursor */
+    var tick = function(){
+      pos.x += (target.x - pos.x) * .085;
+      pos.y += (target.y - pos.y) * .085;
+      draw();
+      if(Math.abs(target.x - pos.x) > .4 || Math.abs(target.y - pos.y) > .4) requestAnimationFrame(tick);
+      else running = false;
+    };
+    var kick = function(){ if(!running){ running = true; requestAnimationFrame(tick); } };
+    if(fine && !calm){
+      hero.addEventListener('pointermove', function(e){
+        var r = hero.getBoundingClientRect();
+        target = {x: e.clientX - r.left, y: e.clientY - r.top};
+        kick();
+      });
+      hero.addEventListener('pointerleave', function(){ target = home(); kick(); });
+    }
+    window.addEventListener('resize', function(){ pos = home(); target = home(); draw(); });
+    if(!calm && bg){
+      var queued = false;
+      var drift = function(){
+        queued = false;
+        var y = window.scrollY;
+        if(y < hero.clientHeight) bg.style.translate = '0 ' + (y * .14).toFixed(1) + 'px';
+      };
+      window.addEventListener('scroll', function(){
+        if(!queued){ queued = true; requestAnimationFrame(drift); }
+      }, {passive:true});
+    }
+  })();
 
   /* ---- year ---- */
   document.getElementById('year').textContent = '© ' + new Date().getFullYear() + ' Spazio Luce';
